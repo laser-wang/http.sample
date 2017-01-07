@@ -3,14 +3,16 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	//	"strings"
 )
 
 func main() {
 	fmt.Printf("hello, world client\n")
-	client1()
+	client2()
 }
 
 func client1() {
@@ -23,4 +25,23 @@ func client1() {
 	defer resp.Body.Close()
 	io.Copy(os.Stdout, resp.Body)
 
+}
+
+func client2() {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", "http://192.168.0.10:12345/login?userCode=001&pwd=001", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+
+	}
+	req.Header.Set("loginToken", "xxx122311")
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		// handle error
+	}
+	fmt.Println(string(body))
 }
